@@ -56,10 +56,14 @@ public class Recoil : MonoBehaviour
         CurrentRecoil2 = Vector3.Lerp(CurrentRecoil2, Vector3.zero, Recoil2 * Time.deltaTime);
         CurrentRecoil3 = Vector3.Lerp(CurrentRecoil3, Vector3.zero, Recoil3 * Time.deltaTime);
         CurrentRecoil4 = Vector3.Lerp(CurrentRecoil4, Vector3.zero, Recoil4 * Time.deltaTime);
+
+
+
         if (!firing)
         {
             RotationOutput = Vector3.Slerp(RotationOutput, Vector3.zero, RotationDampTime * Time.deltaTime);
             RecoilModel.localPosition = Vector3.Slerp(RecoilModel.localPosition, Vector3.zero, PositionDampTime * Time.deltaTime);
+
         }
         RotationCam = Vector3.Slerp(RotationCam, RotationOutput, CameraDampTime * Time.deltaTime);
         cameraRecoil.localRotation *= Quaternion.Euler(RotationCam);
