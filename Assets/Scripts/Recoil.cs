@@ -24,9 +24,9 @@ public class Recoil : MonoBehaviour
 
     [Space(10)]
     public Vector3 RecoilRotation;
-    public Vector3 RecoilRotation_Aim;
+    public Vector3 RecoilRotationAim;
     public Vector3 RecoilKickBack;
-    public Vector3 RecoilKickBack_Aim;
+    public Vector3 RecoilKickBackAim;
     [Space(10)]
 
     public Vector3 CurrentRecoil1;
@@ -39,13 +39,13 @@ public class Recoil : MonoBehaviour
     public Vector3 RotationCam;
 
 
-
+    public bool oneTap;
     public bool firing;
 
     /* Recoil1 = ROTATION
-       Recoil2 = ROTATION_AIM
+       Recoil2 = ROTATIONAim
        Recoil3 = POSITION
-       Recoil4 = POSITION_AIM
+       Recoil4 = POSITIONAim
      */
 
     void Update()
@@ -67,21 +67,21 @@ public class Recoil : MonoBehaviour
         }
         RotationCam = Vector3.Slerp(RotationCam, RotationOutput, CameraDampTime * Time.deltaTime);
         cameraRecoil.localRotation *= Quaternion.Euler(RotationCam);
-        GunRecoil.localRotation = Quaternion.Euler(RotationCam);
 
+        GunRecoil.localRotation = Quaternion.Euler(RotationOutput);
 
 
     }
 
     public void Fire()
     {
+      
 
-
-        if (script.aim == true && firing)
+        if (script.aim)
         {
-
-            CurrentRecoil2 += new Vector3(RecoilRotation_Aim.x, Random.Range(-RecoilRotation_Aim.y, RecoilRotation_Aim.y), Random.Range(-RecoilRotation_Aim.z, RecoilRotation_Aim.z));
-            CurrentRecoil4 += new Vector3(Random.Range(-RecoilKickBack_Aim.x, RecoilKickBack_Aim.x), Random.Range(-RecoilKickBack_Aim.y, RecoilKickBack_Aim.y), RecoilKickBack_Aim.z);
+            
+            CurrentRecoil2 += new Vector3(-RecoilRotationAim.x, Random.Range(-RecoilRotationAim.y, RecoilRotationAim.y), Random.Range(-RecoilRotationAim.z, RecoilRotationAim.z));
+            CurrentRecoil4 += new Vector3(Random.Range(-RecoilKickBackAim.x, RecoilKickBackAim.x), Random.Range(-RecoilKickBackAim.y, RecoilKickBackAim.y), RecoilKickBackAim.z);
 
             RecoilModel.localPosition = Vector3.Slerp(RecoilModel.localPosition, CurrentRecoil4, Recoil4 * Time.deltaTime);
             RotationOutput = Vector3.Slerp(RotationOutput, CurrentRecoil2, RotationDampTime * Time.deltaTime);
@@ -90,11 +90,17 @@ public class Recoil : MonoBehaviour
 
 
         }
-        else if (!script.aim && firing)
+        else if (!script.aim)
         {
-
-            CurrentRecoil1 += new Vector3(Random.Range(-RecoilRotation.x, RecoilRotation.x), Random.Range(-RecoilRotation.y, RecoilRotation.y), Random.Range(-RecoilRotation.z, RecoilRotation.z));
-            CurrentRecoil3 += new Vector3(Random.Range(-RecoilKickBack.x, RecoilKickBack.x), Random.Range(-RecoilKickBack.y, RecoilKickBack.y), RecoilKickBack.z);
+            if (!oneTap)
+            {
+                CurrentRecoil1 += new Vector3(Random.Range(-RecoilRotation.x, RecoilRotation.x), Random.Range(-RecoilRotation.y, RecoilRotation.y), Random.Range(-RecoilRotation.z, RecoilRotation.z));
+            }
+            else
+            {
+                CurrentRecoil1 += new Vector3(-RecoilRotation.x, Random.Range(-RecoilRotation.y, RecoilRotation.y), Random.Range(-RecoilRotation.z, RecoilRotation.z));
+            }
+                CurrentRecoil3 += new Vector3(Random.Range(-RecoilKickBack.x, RecoilKickBack.x), Random.Range(-RecoilKickBack.y, RecoilKickBack.y), RecoilKickBack.z);
             RecoilModel.localPosition = Vector3.Slerp(RecoilModel.localPosition, CurrentRecoil3, Recoil3 * Time.deltaTime);
             RotationOutput = Vector3.Slerp(RotationOutput, CurrentRecoil1, RotationDampTime * Time.deltaTime);
             CurrentRecoil2 = CurrentRecoil1;

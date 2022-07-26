@@ -33,7 +33,7 @@ public class GunSystem : MonoBehaviour
     private void Update()
     {
         MyInput();
-        
+
 
         TMP.text = (bulletsLeft + " / " + magazineSize);
     }
@@ -41,8 +41,16 @@ public class GunSystem : MonoBehaviour
     {
 
 
-        if (allowButtonHold) shooting = Input.GetKey(KeyCode.Mouse0);
-        else shooting = Input.GetKeyDown(KeyCode.Mouse0);
+        if (allowButtonHold)
+        {
+            shooting = Input.GetMouseButton(0);
+            recoil.oneTap = false;
+        }
+        else
+        {
+            shooting = Input.GetMouseButtonDown(0);
+            recoil.oneTap = true;
+        }
 
         if (Input.GetKeyDown(KeyCode.R) && bulletsLeft < magazineSize && !reloading) Reload();
 
@@ -52,17 +60,17 @@ public class GunSystem : MonoBehaviour
         //Shoot
         if (readyToShoot && shooting && !reloading && bulletsLeft > 0)
         {
-
+            recoil.firing = true;
             Shoot();
+
         }
 
-        if (Input.GetKeyUp(KeyCode.Mouse0))
+        if (Input.GetMouseButtonUp(0) && !recoil.oneTap)
         {
             recoil.firing = false;
         }
 
-        if (bulletsLeft == 0)
-        { recoil.firing = false; }
+
     }
 
 
@@ -71,19 +79,16 @@ public class GunSystem : MonoBehaviour
 
 
         recoil.Fire();
-        if (!reloading)
-        {
-            recoil.firing = true;
-        }
+
         //RayCast
         if (Physics.Raycast(attackPoint.transform.position, attackPoint.transform.forward, out rayHit, range, whatIsEnemy))
         {
 
+            Vector3 forward = attackPoint.forward * 20;
+            Debug.DrawRay(attackPoint.position, forward, Color.green, 10);
 
-            
         }
-
-
+        
         //Graphics
         Instantiate(bulletHoleGraphic, rayHit.point, Quaternion.LookRotation(rayHit.normal));
         Instantiate(muzzleFlash, muzzleFlashPoint.position, Quaternion.LookRotation(rayHit.normal));
@@ -100,6 +105,7 @@ public class GunSystem : MonoBehaviour
     private void ResetShot()
     {
         readyToShoot = true;
+        recoil.firing = false;
     }
 
 
