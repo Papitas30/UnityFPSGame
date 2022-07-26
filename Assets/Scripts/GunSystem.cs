@@ -83,9 +83,13 @@ public class GunSystem : MonoBehaviour
         //RayCast
         if (Physics.Raycast(attackPoint.transform.position, attackPoint.transform.forward, out rayHit, range, whatIsEnemy))
         {
-
             Vector3 forward = attackPoint.forward * 20;
             Debug.DrawRay(attackPoint.position, forward, Color.green, 10);
+            if (rayHit.collider.CompareTag("Enemy"))
+            {
+                rayHit.collider.GetComponent<EnemyAI>().TakeDamage(damage);//Gets the EnemyAI script from the gameobject the ray hits
+
+            }
 
         }
         
