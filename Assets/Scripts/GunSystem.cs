@@ -5,7 +5,7 @@ public class GunSystem : MonoBehaviour
 {
     //Gun stats
     public int damage;
-    public float range, reloadTime, timeBetweenShots;
+    public float reloadTime, timeBetweenShots;
     public int magazineSize, bulletsPerTap;
     public bool allowButtonHold, readyToShoot;
     int bulletsLeft;
@@ -14,16 +14,17 @@ public class GunSystem : MonoBehaviour
     bool shooting, reloading;
 
     //Reference
+    public GameObject Light;
     public Transform muzzleFlashPoint;
     public Transform attackPoint;
     public RaycastHit rayHit;
+   
     public LayerMask whatIsEnemy;
     public Recoil recoil;
 
     //Graphics
     public GameObject muzzleFlash, bulletHoleGraphic;
     public TextMeshProUGUI TMP;
-
 
     private void Awake()
     {
@@ -39,9 +40,9 @@ public class GunSystem : MonoBehaviour
     }
     private void MyInput()
     {
-
-
-        if (allowButtonHold)
+       
+        
+            if (allowButtonHold)
         {
             shooting = Input.GetMouseButton(0);
             recoil.oneTap = false;
@@ -70,7 +71,7 @@ public class GunSystem : MonoBehaviour
             recoil.firing = false;
         }
 
-
+       
     }
 
 
@@ -81,26 +82,31 @@ public class GunSystem : MonoBehaviour
         recoil.Fire();
 
         //RayCast
-        if (Physics.Raycast(attackPoint.transform.position, attackPoint.transform.forward, out rayHit, range, whatIsEnemy))
+        if (Physics.Raycast(attackPoint.position, attackPoint.forward, out rayHit))
         {
+          
+
+            Instantiate(bulletHoleGraphic, rayHit.point, Quaternion.LookRotation(rayHit.normal));
+            Instantiate(muzzleFlash, muzzleFlashPoint.position, Quaternion.LookRotation(rayHit.normal));
+
             Vector3 forward = attackPoint.forward * 20;
             Debug.DrawRay(attackPoint.position, forward, Color.green, 10);
+
             if (rayHit.collider.CompareTag("Enemy"))
             {
+
                 rayHit.collider.GetComponent<EnemyAI>().TakeDamage(damage);//Gets the EnemyAI script from the gameobject the ray hits
 
             }
 
         }
-        
+
         //Graphics
-        Instantiate(bulletHoleGraphic, rayHit.point, Quaternion.LookRotation(rayHit.normal));
-        Instantiate(muzzleFlash, muzzleFlashPoint.position, Quaternion.LookRotation(rayHit.normal));
 
         bulletsLeft--;
         readyToShoot = false;
 
-        Invoke("ResetShot", timeBetweenShots);
+        Invoke(nameof(ResetShot), timeBetweenShots);
 
 
 
