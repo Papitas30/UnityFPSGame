@@ -6,9 +6,10 @@ public class PlayerCam : MonoBehaviour
 {
     public float sensX;
     public float sensY;
-    public Camera cam;
-    public Transform cameraT;
+    public Camera camGun;
+    public float targetGun;
     public float zoomMultiplier = 2;
+    public float zoomGunMultiplier;
     public float defaultFov = 90;
     public float zoomDuration = 2;
     public Transform orientation;
@@ -35,18 +36,20 @@ public class PlayerCam : MonoBehaviour
         xRotation = Mathf.Clamp(xRotation, -90f, 90f);
 
         // rotate cam and orientation
-        
-        cameraT.rotation = Quaternion.Euler(xRotation, yRotation, 0);
+
+        transform.rotation = Quaternion.Euler(xRotation, yRotation, 0);
         orientation.rotation = Quaternion.Euler(0, yRotation, 0);
 
         if (Input.GetMouseButton(1))
         {
+            targetGun = defaultFov / zoomGunMultiplier;
             ZoomCamera(defaultFov / zoomMultiplier);
             aim = true;
             
         }
         else
         {
+            targetGun = defaultFov;
             ZoomCamera(defaultFov);
             aim = false;
         }
@@ -54,6 +57,8 @@ public class PlayerCam : MonoBehaviour
     void ZoomCamera(float target)
     {
         float angle = Mathf.Abs((defaultFov / zoomMultiplier) - defaultFov);
-        cam.fieldOfView = Mathf.MoveTowards(cam.fieldOfView, target, angle / zoomDuration * Time.deltaTime);
+        float angleGun = Mathf.Abs((defaultFov / zoomGunMultiplier) - defaultFov);
+        Camera.main.fieldOfView = Mathf.MoveTowards(Camera.main.fieldOfView, target, angle / zoomDuration * Time.deltaTime);
+        camGun.fieldOfView = Mathf.MoveTowards(Camera.main.fieldOfView, targetGun, angleGun / zoomDuration * Time.deltaTime);
     }
 }
