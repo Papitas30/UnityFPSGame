@@ -14,7 +14,7 @@ public class GunSystem : MonoBehaviour
     bool shooting, reloading;
 
     //Reference
-    public GameObject Light;
+   
     public Transform muzzleFlashPoint;
     public Transform attackPoint;
     public RaycastHit rayHit;

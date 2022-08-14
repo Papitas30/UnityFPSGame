@@ -7,7 +7,7 @@ public class PlayerCam : MonoBehaviour
     public float sensX;
     public float sensY;
     public Camera camGun;
-    public float targetGun;
+     float targetGun;
     public float zoomMultiplier = 2;
     public float zoomGunMultiplier;
     public float defaultFov = 90;
@@ -59,6 +59,6 @@ public class PlayerCam : MonoBehaviour
         float angle = Mathf.Abs((defaultFov / zoomMultiplier) - defaultFov);
         float angleGun = Mathf.Abs((defaultFov / zoomGunMultiplier) - defaultFov);
         Camera.main.fieldOfView = Mathf.MoveTowards(Camera.main.fieldOfView, target, angle / zoomDuration * Time.deltaTime);
-        camGun.fieldOfView = Mathf.MoveTowards(Camera.main.fieldOfView, targetGun, angleGun / zoomDuration * Time.deltaTime);
+        camGun.fieldOfView = Mathf.MoveTowards(camGun.fieldOfView, targetGun, angleGun / zoomDuration * Time.deltaTime);
     }
 }

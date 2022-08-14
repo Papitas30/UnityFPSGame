@@ -81,7 +81,7 @@ public class Recoil : MonoBehaviour
         {
             
             CurrentRecoil2 += new Vector3(-RecoilRotationAim.x, Random.Range(-RecoilRotationAim.y, RecoilRotationAim.y), Random.Range(-RecoilRotationAim.z, RecoilRotationAim.z));
-            CurrentRecoil4 += new Vector3(Random.Range(-RecoilKickBackAim.x, RecoilKickBackAim.x), Random.Range(-RecoilKickBackAim.y, RecoilKickBackAim.y), RecoilKickBackAim.z);
+            CurrentRecoil4 += new Vector3(Random.Range(-RecoilKickBackAim.x, RecoilKickBackAim.x), RecoilKickBackAim.y, RecoilKickBackAim.z);
 
             RecoilModel.localPosition = Vector3.Slerp(RecoilModel.localPosition, CurrentRecoil4, Recoil4 * Time.deltaTime);
             RotationOutput = Vector3.Slerp(RotationOutput, CurrentRecoil2, RotationDampTime * Time.deltaTime);
@@ -100,7 +100,7 @@ public class Recoil : MonoBehaviour
             {
                 CurrentRecoil1 += new Vector3(-RecoilRotation.x, Random.Range(-RecoilRotation.y, RecoilRotation.y), Random.Range(-RecoilRotation.z, RecoilRotation.z));
             }
-                CurrentRecoil3 += new Vector3(Random.Range(-RecoilKickBack.x, RecoilKickBack.x), Random.Range(-RecoilKickBack.y, RecoilKickBack.y), RecoilKickBack.z);
+                CurrentRecoil3 += new Vector3(Random.Range(-RecoilKickBack.x, RecoilKickBack.x),RecoilKickBack.y, RecoilKickBack.z);
             RecoilModel.localPosition = Vector3.Slerp(RecoilModel.localPosition, CurrentRecoil3, Recoil3 * Time.deltaTime);
             RotationOutput = Vector3.Slerp(RotationOutput, CurrentRecoil1, RotationDampTime * Time.deltaTime);
             CurrentRecoil2 = CurrentRecoil1;
