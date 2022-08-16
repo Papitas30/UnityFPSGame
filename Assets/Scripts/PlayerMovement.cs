@@ -1,7 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using TMPro;
+using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -10,7 +8,7 @@ public class PlayerMovement : MonoBehaviour
     public float walkSpeed;
     public float sprintSpeed;
 
-    public float groundDrag;
+
 
     [Header("Jumping")]
     public float jumpForce;
@@ -37,7 +35,7 @@ public class PlayerMovement : MonoBehaviour
     public float maxSlopeAngle;
     private RaycastHit slopeHit;
     private bool exitingSlope;
-    
+
 
     public Transform orientation;
 
@@ -69,19 +67,19 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
-       
+
         TMP.text = (rb.velocity.ToString());
         // ground check
-        grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.1f, whatIsGround);
+        grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.05f, whatIsGround);
 
         MyInput();
         SpeedControl();
         StateHandler();
-        
-      
-        
-           
-          
+
+
+
+
+
     }
 
     private void FixedUpdate()
@@ -95,12 +93,12 @@ public class PlayerMovement : MonoBehaviour
         verticalInput = Input.GetAxisRaw("Vertical");
 
         // when to jump
-        if(Input.GetKey(jumpKey) && readyToJump && grounded)
+        if (Input.GetKey(jumpKey) && readyToJump && grounded)
         {
             readyToJump = false;
 
             Jump();
-        
+
             Invoke(nameof(ResetJump), jumpCooldown);
         }
 
@@ -128,7 +126,7 @@ public class PlayerMovement : MonoBehaviour
         }
 
         // Mode - Sprinting
-        else if(grounded && Input.GetKey(sprintKey))
+        else if (grounded && Input.GetKey(sprintKey))
         {
             state = MovementState.sprinting;
             moveSpeed = sprintSpeed;
@@ -163,16 +161,16 @@ public class PlayerMovement : MonoBehaviour
         }
 
         // on ground
-        else if(grounded || !grounded)
+        else if (grounded || !grounded)
             rb.AddForce(moveDirection.normalized * moveSpeed * 10f, ForceMode.Force);
 
-        
+
 
         // turn gravity off while on slope
         rb.useGravity = !OnSlope();
 
 
-      
+
     }
 
     private void SpeedControl()
@@ -206,7 +204,7 @@ public class PlayerMovement : MonoBehaviour
         rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
 
         rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
-        
+
     }
     private void ResetJump()
     {
@@ -217,15 +215,15 @@ public class PlayerMovement : MonoBehaviour
 
     private bool OnSlope()
     {
-        if(Physics.Raycast(transform.position, Vector3.down, out slopeHit, playerHeight * 0.5f + 0.3f))
+        if (Physics.Raycast(transform.position, Vector3.down, out slopeHit, playerHeight * 0.5f + 0.3f))
         {
-            
+
             float angle = Vector3.Angle(Vector3.up, slopeHit.normal);
             return angle < maxSlopeAngle && angle != 0;
 
-            
+
         }
-        
+
         return false;
     }
 

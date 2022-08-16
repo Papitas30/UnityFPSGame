@@ -13,6 +13,7 @@ public class PlayerCam : MonoBehaviour
     public float defaultFov = 90;
     public float zoomDuration = 2;
     public Transform orientation;
+    public Transform moveCam;
     public bool aim;
     float xRotation;
     float yRotation;
@@ -26,6 +27,8 @@ public class PlayerCam : MonoBehaviour
 
     private void Update()
     {
+        transform.position = moveCam.position;
+        
         // get mouse input
         float mouseX = Input.GetAxisRaw("Mouse X") * Time.deltaTime * sensX;
         float mouseY = Input.GetAxisRaw("Mouse Y") * Time.deltaTime * sensY;
