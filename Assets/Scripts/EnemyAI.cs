@@ -11,7 +11,7 @@ public class EnemyAI : MonoBehaviour
     public LayerMask whatIsGround, whatIsPlayer;
 
     public float health;
-
+    float aiSpeed;
     //Patroling
     public Vector3 walkPoint;
     bool walkPointSet;
@@ -26,7 +26,10 @@ public class EnemyAI : MonoBehaviour
     public float sightRange, attackRange, criticalRange;
     public bool playerInSightRange, playerInAttackRange, playerInCriticalRange;
 
-
+    private void Start()
+    {
+        aiSpeed = agent.speed;
+    }
 
     private void Update()
     {
@@ -51,7 +54,7 @@ public class EnemyAI : MonoBehaviour
         Vector3 distanceToWalkPoint = transform.position - walkPoint;
 
         //Walkpoint reached
-        if (distanceToWalkPoint.magnitude < 1f)
+        if (distanceToWalkPoint.magnitude < 0.5f)
             walkPointSet = false;
     }
     private void SearchWalkPoint()
@@ -65,31 +68,36 @@ public class EnemyAI : MonoBehaviour
         if (Physics.Raycast(walkPoint, -transform.up, 2f, whatIsGround))
             walkPointSet = true;
     }
-    
+
     private void ChasePlayer()
     {
-        agent.SetDestination(player.position);
-        
+        if (!walkPointSet)
+        {
+            agent.SetDestination(player.position);
+
+        }
+
+
     }
 
     private void AttackPlayer()
-    {
+    {   
         agent.SetDestination(player.position);
         if (playerInCriticalRange)
         {
-            agent.speed = 2;
+            agent.speed = Mathf.Lerp(aiSpeed, agent.speed, 1f); ;
 
         }
 
         else if (!playerInCriticalRange)
         {
-            agent.speed = 10;
-          
+            agent.speed = aiSpeed;
+
         }
 
 
 
-        
+
 
         if (!alreadyAttacked)
         {
@@ -113,7 +121,11 @@ public class EnemyAI : MonoBehaviour
         health -= damage;
 
         if (health <= 0)
-            Invoke(nameof(DestroyEnemy), 0.1f);
+        {
+            DestroyEnemy();
+        }
+
+
     }
     private void DestroyEnemy()
     {
