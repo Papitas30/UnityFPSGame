@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Laser : MonoBehaviour
@@ -22,11 +20,6 @@ public class Laser : MonoBehaviour
         if (Physics.Raycast(laserStart.position, laserStart.forward, out rayHit))
         {
 
-
-
-
-            Vector3 forward = laserStart.forward * 20;
-            Debug.DrawRay(laserStart.position, forward, Color.green, 10);
 
             transform.SetPositionAndRotation(rayHit.point, Quaternion.LookRotation(rayHit.normal));
 

@@ -4,6 +4,7 @@ using UnityEngine.AI;
 
 public class EnemyAI : MonoBehaviour
 {
+    public EnemyFOV EnemyFOV;
     public NavMeshAgent agent;
 
     public Transform player;
@@ -37,10 +38,10 @@ public class EnemyAI : MonoBehaviour
         playerInSightRange = Physics.CheckSphere(transform.position, sightRange, whatIsPlayer);
         playerInAttackRange = Physics.CheckSphere(transform.position, attackRange, whatIsPlayer);
         playerInCriticalRange = Physics.CheckSphere(transform.position, criticalRange, whatIsPlayer);
-
-        if (!playerInSightRange && !playerInAttackRange) Patroling();
-        if (playerInSightRange && !playerInAttackRange) ChasePlayer();
-        if (playerInAttackRange && playerInSightRange) AttackPlayer();
+        bool playerVis = EnemyFOV.isVisible;
+        if (!playerInSightRange && !playerVis) Patroling();
+        if (playerInSightRange || playerVis) ChasePlayer();
+        if (playerInAttackRange && playerInSightRange || playerInAttackRange && playerVis) AttackPlayer();
 
     }
 
@@ -85,14 +86,18 @@ public class EnemyAI : MonoBehaviour
         agent.SetDestination(player.position);
         if (playerInCriticalRange)
         {
-            agent.speed = Mathf.Lerp(aiSpeed, agent.speed, 1f); ;
+            if (agent.speed > aiSpeed/1.5)
+            {
+               agent.speed -= 4 * Time.deltaTime;
+                agent.acceleration -= 1 * Time.deltaTime;
+            }
 
         }
 
         else if (!playerInCriticalRange)
         {
             agent.speed = aiSpeed;
-
+            agent.acceleration = 7;
         }
 
 

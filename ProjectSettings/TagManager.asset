@@ -4,10 +4,9 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - Ledge
   - Enemy
-  - Enemy2
   - GunCam
+  - Grenade
   layers:
   - Default
   - TransparentFX
@@ -21,7 +20,7 @@ TagManager:
   - whatIsWall
   - whatIsGround
   - Gun
-  - 
+  - Grenade
   - 
   - 
   - 

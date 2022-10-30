@@ -12,8 +12,7 @@ public class EnemyFOV : MonoBehaviour
     public LayerMask targetMask;
     public LayerMask obstacleMask;
 
-    [HideInInspector]
-    public List<Transform> visibleTargets = new List<Transform>();
+    public bool isVisible;
 
     public float meshResolution;
     public int edgeResolveIterations;
@@ -50,7 +49,7 @@ public class EnemyFOV : MonoBehaviour
 
     void FindVisibleTargets()
     {
-        visibleTargets.Clear();
+        
         Collider[] targetsInViewRadius = Physics.OverlapSphere(transform.position, viewRadius, targetMask);
 
         for (int i = 0; i < targetsInViewRadius.Length; i++)
@@ -62,7 +61,7 @@ public class EnemyFOV : MonoBehaviour
                 float dstToTarget = Vector3.Distance(transform.position, target.position);
                 if (!Physics.Raycast(transform.position, dirToTarget, dstToTarget, obstacleMask))
                 {
-                    visibleTargets.Add(target);
+                    isVisible = true;
                 }
             }
         }

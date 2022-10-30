@@ -14,11 +14,11 @@ public class GunSystem : MonoBehaviour
     bool shooting, reloading;
 
     //Reference
-   
+
     public Transform muzzleFlashPoint;
     public Transform attackPoint;
     public RaycastHit rayHit;
-   
+
     public LayerMask whatIsEnemy;
     public Recoil recoil;
 
@@ -40,9 +40,9 @@ public class GunSystem : MonoBehaviour
     }
     private void MyInput()
     {
-       
-        
-            if (allowButtonHold)
+
+
+        if (allowButtonHold)
         {
             shooting = Input.GetMouseButton(0);
             recoil.oneTap = false;
@@ -71,7 +71,7 @@ public class GunSystem : MonoBehaviour
             recoil.firing = false;
         }
 
-       
+
     }
 
 
@@ -84,7 +84,7 @@ public class GunSystem : MonoBehaviour
         //RayCast
         if (Physics.Raycast(attackPoint.position, attackPoint.forward, out rayHit))
         {
-          
+
 
             Instantiate(bulletHoleGraphic, rayHit.point, Quaternion.LookRotation(rayHit.normal));
             Instantiate(muzzleFlash, muzzleFlashPoint.position, Quaternion.LookRotation(rayHit.normal));
