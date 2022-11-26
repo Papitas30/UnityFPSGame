@@ -6,7 +6,6 @@ public class Laser : MonoBehaviour
 
     private RaycastHit rayHit;
 
-
     // Update is called once per frame
     void Update()
     {
@@ -15,13 +14,13 @@ public class Laser : MonoBehaviour
             LaserRay();
         }
     }
+
     private void LaserRay()
     {
         if (Physics.Raycast(laserStart.position, laserStart.forward, out rayHit))
         {
 
-
-            transform.SetPositionAndRotation(rayHit.point, Quaternion.LookRotation(rayHit.normal));
+            transform.SetPositionAndRotation(rayHit.point + (rayHit.normal * 0.01f), Quaternion.LookRotation(rayHit.normal));
 
         }
     }

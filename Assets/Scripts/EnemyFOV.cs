@@ -6,10 +6,11 @@ public class EnemyFOV : MonoBehaviour
 {
 
     public float viewRadius;
+    public Transform Player;
     [Range(0, 360)]
     public float viewAngle;
 
-    public LayerMask targetMask;
+    public LayerMask PlayerMask;
     public LayerMask obstacleMask;
 
     public bool isVisible;
@@ -23,22 +24,22 @@ public class EnemyFOV : MonoBehaviour
     public MeshFilter viewMeshFilter;
     Mesh viewMesh;
 
+    public Collider[] PlayersInViewRadius;
     void Start()
     {
-        viewMesh = new Mesh();
-        viewMesh.name = "View Mesh";
+        viewMesh = new Mesh
+        { name = "View Mesh" };
         viewMeshFilter.mesh = viewMesh;
 
-        StartCoroutine("FindTargetsWithDelay", .2f);
+        StartCoroutine(nameof(FindPlayersWithDelay), .2f);
     }
 
-
-    IEnumerator FindTargetsWithDelay(float delay)
+    IEnumerator FindPlayersWithDelay(float delay)
     {
         while (true)
         {
             yield return new WaitForSeconds(delay);
-            FindVisibleTargets();
+            FindVisiblePlayers();
         }
     }
 
@@ -47,41 +48,38 @@ public class EnemyFOV : MonoBehaviour
         DrawFieldOfView();
     }
 
-    void FindVisibleTargets()
+    void FindVisiblePlayers()
     {
-        
-        Collider[] targetsInViewRadius = Physics.OverlapSphere(transform.position, viewRadius, targetMask);
-
-        for (int i = 0; i < targetsInViewRadius.Length; i++)
+        Vector3 dirToPlayer = (Player.position - transform.position).normalized;
+        if (Vector3.Angle(transform.forward, dirToPlayer) < viewAngle / 2)
         {
-            Transform target = targetsInViewRadius[i].transform;
-            Vector3 dirToTarget = (target.position - transform.position).normalized;
-            if (Vector3.Angle(transform.forward, dirToTarget) < viewAngle / 2)
+            float dstToPlayer = Vector3.Distance(transform.position, Player.position);
+            if (!Physics.Raycast(transform.position, dirToPlayer, dstToPlayer, obstacleMask))
             {
-                float dstToTarget = Vector3.Distance(transform.position, target.position);
-                if (!Physics.Raycast(transform.position, dirToTarget, dstToTarget, obstacleMask))
-                {
-                    isVisible = true;
-                }
+                isVisible = true;
             }
+            else
+                isVisible = false;
         }
+        else
+            isVisible = false;
     }
 
     void DrawFieldOfView()
     {
         int stepCount = Mathf.RoundToInt(viewAngle * meshResolution);
         float stepAngleSize = viewAngle / stepCount;
-        List<Vector3> viewPoints = new List<Vector3>();
-        ViewCastInfo oldViewCast = new ViewCastInfo();
+        List<Vector3> viewPoints = new();
+        ViewCastInfo oldViewCast = new();
         for (int i = 0; i <= stepCount; i++)
         {
-            float angle = transform.eulerAngles.y - viewAngle / 2 + stepAngleSize * i;
+            float angle = transform.eulerAngles.y - (viewAngle / 2) + (stepAngleSize * i);
             ViewCastInfo newViewCast = ViewCast(angle);
 
             if (i > 0)
             {
                 bool edgeDstThresholdExceeded = Mathf.Abs(oldViewCast.dst - newViewCast.dst) > edgeDstThreshold;
-                if (oldViewCast.hit != newViewCast.hit || (oldViewCast.hit && newViewCast.hit && edgeDstThresholdExceeded))
+                if (oldViewCast.hit != newViewCast.hit || oldViewCast.hit && newViewCast.hit && edgeDstThresholdExceeded)
                 {
                     EdgeInfo edge = FindEdge(oldViewCast, newViewCast);
                     if (edge.pointA != Vector3.zero)
@@ -96,7 +94,6 @@ public class EnemyFOV : MonoBehaviour
 
             }
 
-
             viewPoints.Add(newViewCast.point);
             oldViewCast = newViewCast;
         }
@@ -108,13 +105,13 @@ public class EnemyFOV : MonoBehaviour
         vertices[0] = Vector3.zero;
         for (int i = 0; i < vertexCount - 1; i++)
         {
-            vertices[i + 1] = transform.InverseTransformPoint(viewPoints[i]) + Vector3.forward * maskCutawayDst;
+            vertices[i + 1] = transform.InverseTransformPoint(viewPoints[i]) + (Vector3.forward * maskCutawayDst);
 
             if (i < vertexCount - 2)
             {
                 triangles[i * 3] = 0;
-                triangles[i * 3 + 1] = i + 1;
-                triangles[i * 3 + 2] = i + 2;
+                triangles[(i * 3) + 1] = i + 1;
+                triangles[(i * 3) + 2] = i + 2;
             }
         }
 
@@ -124,7 +121,6 @@ public class EnemyFOV : MonoBehaviour
         viewMesh.triangles = triangles;
         viewMesh.RecalculateNormals();
     }
-
 
     EdgeInfo FindEdge(ViewCastInfo minViewCast, ViewCastInfo maxViewCast)
     {
@@ -154,19 +150,17 @@ public class EnemyFOV : MonoBehaviour
         return new EdgeInfo(minPoint, maxPoint);
     }
 
-
     ViewCastInfo ViewCast(float globalAngle)
     {
         Vector3 dir = DirFromAngle(globalAngle, true);
-        RaycastHit hit;
 
-        if (Physics.Raycast(transform.position, dir, out hit, viewRadius, obstacleMask))
+        if (Physics.Raycast(transform.position, dir, out RaycastHit hit, viewRadius, obstacleMask))
         {
             return new ViewCastInfo(true, hit.point, hit.distance, globalAngle);
         }
         else
         {
-            return new ViewCastInfo(false, transform.position + dir * viewRadius, viewRadius, globalAngle);
+            return new ViewCastInfo(false, transform.position + (dir * viewRadius), viewRadius, globalAngle);
         }
     }
 

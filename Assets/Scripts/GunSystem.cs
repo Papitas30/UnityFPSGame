@@ -31,16 +31,16 @@ public class GunSystem : MonoBehaviour
         bulletsLeft = magazineSize;
 
     }
+
     private void Update()
     {
         MyInput();
 
-
-        TMP.text = (bulletsLeft + " / " + magazineSize);
+        TMP.text = bulletsLeft + " / " + magazineSize;
     }
+
     private void MyInput()
     {
-
 
         if (allowButtonHold)
         {
@@ -54,7 +54,6 @@ public class GunSystem : MonoBehaviour
         }
 
         if (Input.GetKeyDown(KeyCode.R) && bulletsLeft < magazineSize && !reloading) Reload();
-
 
         if (bulletsLeft == 0 && !reloading && !recoil.firing) Reload();
 
@@ -71,20 +70,16 @@ public class GunSystem : MonoBehaviour
             recoil.firing = false;
         }
 
-
     }
-
 
     void Shoot()
     {
-
 
         recoil.Fire();
 
         //RayCast
         if (Physics.Raycast(attackPoint.position, attackPoint.forward, out rayHit))
         {
-
 
             Instantiate(bulletHoleGraphic, rayHit.point, Quaternion.LookRotation(rayHit.normal));
             Instantiate(muzzleFlash, muzzleFlashPoint.position, Quaternion.LookRotation(rayHit.normal));
@@ -108,24 +103,21 @@ public class GunSystem : MonoBehaviour
 
         Invoke(nameof(ResetShot), timeBetweenShots);
 
-
-
-
     }
+
     private void ResetShot()
     {
         readyToShoot = true;
         recoil.firing = false;
     }
 
-
-
     private void Reload()
     {
         recoil.firing = false;
         reloading = true;
-        Invoke("ReloadFinished", reloadTime);
+        Invoke(nameof(ReloadFinished), reloadTime);
     }
+
     private void ReloadFinished()
     {
         bulletsLeft = magazineSize;
