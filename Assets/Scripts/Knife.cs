@@ -24,15 +24,13 @@ public class Knife : MonoBehaviour
             quickKnife = false;
 
         }
-       else if (Input.GetMouseButtonDown(0) && canAttack)
+        else if (Input.GetMouseButtonDown(0) && canAttack)
         {
             Debug.Log("quick");
             quickKnife = true;
             holdKnife = false;
-           
-        }
 
-      
+        }
 
     }
 

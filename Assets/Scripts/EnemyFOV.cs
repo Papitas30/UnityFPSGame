@@ -12,7 +12,7 @@ public class EnemyFOV : MonoBehaviour
 
     public LayerMask PlayerMask;
     public LayerMask obstacleMask;
-
+    private RaycastHit hit;
     public bool isVisible;
 
     public float meshResolution;
@@ -24,14 +24,13 @@ public class EnemyFOV : MonoBehaviour
     public MeshFilter viewMeshFilter;
     Mesh viewMesh;
 
-    public Collider[] PlayersInViewRadius;
     void Start()
     {
         viewMesh = new Mesh
         { name = "View Mesh" };
         viewMeshFilter.mesh = viewMesh;
 
-        StartCoroutine(nameof(FindPlayersWithDelay), .2f);
+        StartCoroutine(nameof(FindPlayersWithDelay), .15f);
     }
 
     IEnumerator FindPlayersWithDelay(float delay)
@@ -53,10 +52,13 @@ public class EnemyFOV : MonoBehaviour
         Vector3 dirToPlayer = (Player.position - transform.position).normalized;
         if (Vector3.Angle(transform.forward, dirToPlayer) < viewAngle / 2)
         {
-            float dstToPlayer = Vector3.Distance(transform.position, Player.position);
-            if (!Physics.Raycast(transform.position, dirToPlayer, dstToPlayer, obstacleMask))
+
+            if (Physics.Raycast(transform.position, dirToPlayer, out hit, viewRadius, PlayerMask))
             {
+
                 isVisible = true;
+
+
             }
             else
                 isVisible = false;

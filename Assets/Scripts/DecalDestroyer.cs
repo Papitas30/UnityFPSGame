@@ -1,14 +1,25 @@
 ﻿using System.Collections;
 using UnityEngine;
+using UnityEngine.Pool;
 
 public class DecalDestroyer : MonoBehaviour
 {
 
-	public float lifeTime = 5.0f;
+    public float lifeTime;
+    private IObjectPool<DecalDestroyer> dPool;
+    private void OnEnable()
+    {
+        StartCoroutine(Pooling());
+    }
+    private IEnumerator Pooling()
+    {
+        yield return new WaitForSeconds(lifeTime);
+        dPool?.Release(this);
+    }
 
-	private IEnumerator Start()
-	{
-		yield return new WaitForSeconds(lifeTime);
-		Destroy(gameObject);
-	}
+    public void SetPool(IObjectPool<DecalDestroyer> pool)
+    {
+        dPool = pool;
+    }
+
 }

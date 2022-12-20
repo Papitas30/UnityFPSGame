@@ -42,6 +42,7 @@ public class MenuSystem : MonoBehaviour
 
     public void Pause()
     {
+       
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         dof.active = true;
@@ -49,6 +50,7 @@ public class MenuSystem : MonoBehaviour
         SettingsMenu.SetActive(false);
         Time.timeScale = 0f;
         GamePaused = true;
+        System.GC.Collect();
     }
     public void Resume()
     {

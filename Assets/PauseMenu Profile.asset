@@ -38,8 +38,8 @@ MonoBehaviour:
     overrideState: 0
     value: {r: 1, g: 0, b: 0, a: 1}
   fastMode:
-    overrideState: 0
-    value: 0
+    overrideState: 1
+    value: 1
   dirtTexture:
     overrideState: 1
     value: {fileID: 2800000, guid: ce2297cf894a224428669c2ac1aa2393, type: 3}
@@ -64,10 +64,10 @@ MonoBehaviour:
     overrideState: 1
     value: 1
   shutterAngle:
-    overrideState: 0
+    overrideState: 1
     value: 270
   sampleCount:
-    overrideState: 0
+    overrideState: 1
     value: 10
 --- !u!114 &-277404478299337250
 MonoBehaviour:
@@ -153,7 +153,7 @@ MonoBehaviour:
     value: -12
   thicknessModifier:
     overrideState: 1
-    value: 5
+    value: 10
   directLightingStrength:
     overrideState: 1
     value: 0

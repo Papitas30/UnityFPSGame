@@ -16,7 +16,8 @@ public class EnemyAI : MonoBehaviour
     //Patroling
     public Vector3 walkPoint;
     public Vector3 lastSeenPos;
-   public bool walkPointSet;
+    private Quaternion lastSeenRot;
+    public bool walkPointSet;
     public float walkPointRange;
 
     //Attacking
@@ -31,7 +32,7 @@ public class EnemyAI : MonoBehaviour
     private void Start()
     {
         aiSpeed = agent.speed;
-        SearchWalkPoint();
+        Patroling();
     }
 
     private void Update()
@@ -41,9 +42,12 @@ public class EnemyAI : MonoBehaviour
         playerInAttackRange = Physics.CheckSphere(transform.position, attackRange, whatIsPlayer);
         playerInCriticalRange = Physics.CheckSphere(transform.position, criticalRange, whatIsPlayer);
         bool playerVis = EnemyFOV.isVisible;
-        if (!playerVis) Patroling();
-        else if (playerInAttackRange && playerVis) AttackPlayer();
-        else if (playerVis || playerInCriticalRange) ChasePlayer();
+        if (!playerVis && !playerInCriticalRange) Patroling();
+        if (playerVis || playerInCriticalRange) ChasePlayer();
+        if (playerInAttackRange && playerVis) AttackPlayer();
+        
+        
+        
 
     }
 
@@ -51,11 +55,12 @@ public class EnemyAI : MonoBehaviour
     {
         if (hasChased)
         {
-            lastSeenPos = player.position;
-            agent.SetDestination(lastSeenPos);
+            agent.speed = aiSpeed;
+            agent.acceleration = 7;
+            agent.SetDestination(player.position);
             walkPointSet = true;
+            hasChased = false;
         }
-        
 
         if (!walkPointSet)
         {
@@ -64,12 +69,15 @@ public class EnemyAI : MonoBehaviour
         }
         else
             Debug.Log("patrol2");
-        Vector3 distanceToWalkPoint = transform.position - agent.destination;
+        float distanceToWalkPoint = Vector3.Distance(transform.position, agent.destination);
 
         //Walkpoint reached
-        if (distanceToWalkPoint.magnitude < 0.5f)
-            walkPointSet = false;
+        if (distanceToWalkPoint < 0.5f)
+            SearchWalkPoint();
+        walkPointSet = false;
+
     }
+
     private void SearchWalkPoint()
     {
         Debug.Log("searching");
@@ -84,6 +92,7 @@ public class EnemyAI : MonoBehaviour
             walkPointSet = true;
             agent.SetDestination(walkPoint);
         }
+        else return;
     }
 
     private void ChasePlayer()
@@ -100,6 +109,7 @@ public class EnemyAI : MonoBehaviour
     {
         hasChased = true;
         Debug.Log("attack");
+
         agent.SetDestination(player.position);
         walkPointSet = true;
         if (playerInCriticalRange)

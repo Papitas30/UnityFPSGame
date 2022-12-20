@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.Pool;
 
 public class GunSystem : MonoBehaviour
 {
@@ -26,12 +27,40 @@ public class GunSystem : MonoBehaviour
     public GameObject muzzleFlash, bulletHoleGraphic;
     public TextMeshProUGUI TMP;
 
+    [SerializeField] private DecalDestroyer decalPrefab;
+
+    private IObjectPool<DecalDestroyer> decalPool;
+
     private void Awake()
     {
+        decalPool = new ObjectPool<DecalDestroyer>(CreateDecal, OnGetDecal, OnReleaseDecal, OnDestroyDecal, maxSize: 30);
         bulletsLeft = magazineSize;
 
     }
+    private DecalDestroyer CreateDecal()
+    {
+        DecalDestroyer decal = Instantiate(decalPrefab, rayHit.point, Quaternion.LookRotation(rayHit.normal));
+        decal.transform.SetParent(rayHit.transform);
+        decal.SetPool(decalPool);
+        return decal;
+    }
+    private void OnGetDecal(DecalDestroyer decal)
+    {
+        decal.gameObject.SetActive(true);
 
+        decal.transform.SetPositionAndRotation(rayHit.point, Quaternion.LookRotation(rayHit.normal));
+        decal.transform.SetParent(rayHit.transform);
+    }
+
+    private void OnReleaseDecal(DecalDestroyer decal)
+    {
+        decal.gameObject.SetActive(false);
+    }
+
+    private void OnDestroyDecal(DecalDestroyer decal)
+    {
+        Destroy(decal.gameObject);
+    }
     private void Update()
     {
         MyInput();
@@ -81,7 +110,7 @@ public class GunSystem : MonoBehaviour
         if (Physics.Raycast(attackPoint.position, attackPoint.forward, out rayHit))
         {
 
-            Instantiate(bulletHoleGraphic, rayHit.point, Quaternion.LookRotation(rayHit.normal));
+            decalPool?.Get();
             Instantiate(muzzleFlash, muzzleFlashPoint.position, Quaternion.LookRotation(rayHit.normal));
 
             Vector3 forward = attackPoint.forward * 20;

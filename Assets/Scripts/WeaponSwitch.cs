@@ -18,41 +18,41 @@ public class WeaponSwitch : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetButtonDown("1"))
+        if (Input.GetKeyDown(KeyCode.Alpha1))
         {
             object01.SetActive(true);
             object02.SetActive(false);
             object03.SetActive(false);
             object04.SetActive(false);
-           
+
         }
 
-        if (Input.GetButtonDown("2"))
+        if (Input.GetKeyDown(KeyCode.Alpha2))
         {
             object01.SetActive(false);
             object02.SetActive(true);
             object03.SetActive(false);
             object04.SetActive(false);
-           
+
         }
 
-        if (Input.GetButtonDown("3"))
+        if (Input.GetKeyDown(KeyCode.Alpha3))
         {
             object01.SetActive(false);
             object02.SetActive(false);
             object03.SetActive(true);
             object04.SetActive(false);
-            
+
         }
 
-        if (Input.GetButtonDown("4"))
+        if (Input.GetKeyDown(KeyCode.F))
         {
             object01.SetActive(false);
             object02.SetActive(false);
             object03.SetActive(false);
             object04.SetActive(true);
-            
+
         }
-       
+
     }
 }

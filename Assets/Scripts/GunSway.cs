@@ -24,7 +24,7 @@ public class GunSway : MonoBehaviour
         movementX = Mathf.Clamp(movementX, -maxAmount, maxAmount);
         movementY = Mathf.Clamp(movementY, -maxAmount, maxAmount);
 
-        Vector3 finalPosition = new Vector3(movementX, movementY, 0);
+        Vector3 finalPosition = new(movementX, movementY, 0);
         transform.localPosition = Vector3.Lerp(transform.localPosition, finalPosition + initialPosition, Time.deltaTime * smoothAmount);
     }
 }

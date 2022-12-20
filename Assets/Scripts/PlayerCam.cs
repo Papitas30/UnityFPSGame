@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerCam : MonoBehaviour
@@ -7,7 +5,7 @@ public class PlayerCam : MonoBehaviour
     public float sensX;
     public float sensY;
     public Camera camGun;
-     float targetGun;
+    float targetGun;
     public float zoomMultiplier = 2;
     public float zoomGunMultiplier;
     public float defaultFov = 90;
@@ -28,10 +26,10 @@ public class PlayerCam : MonoBehaviour
     private void Update()
     {
         transform.position = moveCam.position;
-        
+
         // get mouse input
-        float mouseX = Input.GetAxisRaw("Mouse X") * Time.deltaTime * sensX;
-        float mouseY = Input.GetAxisRaw("Mouse Y") * Time.deltaTime * sensY;
+        float mouseX = Input.GetAxisRaw("Mouse X") * sensX;
+        float mouseY = Input.GetAxisRaw("Mouse Y") * sensY;
 
         yRotation += mouseX;
 
@@ -40,15 +38,13 @@ public class PlayerCam : MonoBehaviour
 
         // rotate cam and orientation
 
-        transform.rotation = Quaternion.Euler(xRotation, yRotation, 0);
-        orientation.rotation = Quaternion.Euler(0, yRotation, 0);
 
         if (Input.GetMouseButton(1))
         {
             targetGun = defaultFov / zoomGunMultiplier;
             ZoomCamera(defaultFov / zoomMultiplier);
             aim = true;
-            
+
         }
         else
         {
@@ -56,6 +52,12 @@ public class PlayerCam : MonoBehaviour
             ZoomCamera(defaultFov);
             aim = false;
         }
+    }
+    private void LateUpdate()
+    {
+        transform.SetPositionAndRotation(moveCam.position, Quaternion.Euler(xRotation, yRotation, 0));
+        orientation.rotation = Quaternion.Euler(0, yRotation, 0);
+
     }
     void ZoomCamera(float target)
     {
