@@ -11,7 +11,7 @@ public class Laser : MonoBehaviour
         laserSprite = GetComponent<SpriteRenderer>();
     }
     // Update is called once per frame
-    void Update()
+    void LateUpdate()
     {
         if (Input.GetMouseButton(1))
         {

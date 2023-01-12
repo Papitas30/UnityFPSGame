@@ -22,7 +22,7 @@ public class EnemyFOV : MonoBehaviour
     public float maskCutawayDst = .1f;
 
     public MeshFilter viewMeshFilter;
-    Mesh viewMesh;
+    private Mesh viewMesh;
 
     void Start()
     {
@@ -50,21 +50,7 @@ public class EnemyFOV : MonoBehaviour
     void FindVisiblePlayers()
     {
         Vector3 dirToPlayer = (Player.position - transform.position).normalized;
-        if (Vector3.Angle(transform.forward, dirToPlayer) < viewAngle / 2)
-        {
-
-            if (Physics.Raycast(transform.position, dirToPlayer, out hit, viewRadius, PlayerMask))
-            {
-
-                isVisible = true;
-
-
-            }
-            else
-                isVisible = false;
-        }
-        else
-            isVisible = false;
+        isVisible = Vector3.Angle(transform.forward, dirToPlayer) < viewAngle / 2 && Physics.Raycast(transform.position, dirToPlayer, out hit, viewRadius, PlayerMask);
     }
 
     void DrawFieldOfView()

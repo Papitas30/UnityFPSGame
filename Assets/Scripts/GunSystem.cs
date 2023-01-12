@@ -15,51 +15,22 @@ public class GunSystem : MonoBehaviour
     bool shooting, reloading;
 
     //Reference
-
+    
     public Transform muzzleFlashPoint;
     public Transform attackPoint;
-    public RaycastHit rayHit;
+    private RaycastHit rayHit;
 
     public LayerMask whatIsEnemy;
     public Recoil recoil;
 
     //Graphics
-    public GameObject muzzleFlash, bulletHoleGraphic;
+    public GameObject muzzleFlash;
     public TextMeshProUGUI TMP;
-
     [SerializeField] private DecalDestroyer decalPrefab;
-
-    private IObjectPool<DecalDestroyer> decalPool;
-
-    private void Awake()
+    [HideInInspector] private IObjectPool<DecalDestroyer> decalPool;
+    private void Start()
     {
         decalPool = new ObjectPool<DecalDestroyer>(CreateDecal, OnGetDecal, OnReleaseDecal, OnDestroyDecal, maxSize: 30);
-        bulletsLeft = magazineSize;
-
-    }
-    private DecalDestroyer CreateDecal()
-    {
-        DecalDestroyer decal = Instantiate(decalPrefab, rayHit.point, Quaternion.LookRotation(rayHit.normal));
-        decal.transform.SetParent(rayHit.transform);
-        decal.SetPool(decalPool);
-        return decal;
-    }
-    private void OnGetDecal(DecalDestroyer decal)
-    {
-        decal.gameObject.SetActive(true);
-
-        decal.transform.SetPositionAndRotation(rayHit.point, Quaternion.LookRotation(rayHit.normal));
-        decal.transform.SetParent(rayHit.transform);
-    }
-
-    private void OnReleaseDecal(DecalDestroyer decal)
-    {
-        decal.gameObject.SetActive(false);
-    }
-
-    private void OnDestroyDecal(DecalDestroyer decal)
-    {
-        Destroy(decal.gameObject);
     }
     private void Update()
     {
@@ -111,7 +82,7 @@ public class GunSystem : MonoBehaviour
         {
 
             decalPool?.Get();
-            Instantiate(muzzleFlash, muzzleFlashPoint.position, Quaternion.LookRotation(rayHit.normal));
+
 
             Vector3 forward = attackPoint.forward * 20;
             Debug.DrawRay(attackPoint.position, forward, Color.green, 10);
@@ -152,5 +123,29 @@ public class GunSystem : MonoBehaviour
         bulletsLeft = magazineSize;
         reloading = false;
     }
+    private DecalDestroyer CreateDecal()
+    {
+        DecalDestroyer decal = Instantiate(decalPrefab, rayHit.point, Quaternion.LookRotation(rayHit.normal));
 
+        decal.transform.SetParent(rayHit.transform);
+        decal.SetPool(decalPool);
+        return decal;
+    }
+    private void OnGetDecal(DecalDestroyer decal)
+    {
+        decal.gameObject.SetActive(true);
+
+        decal.transform.SetPositionAndRotation(rayHit.point, Quaternion.LookRotation(rayHit.normal));
+        decal.transform.SetParent(rayHit.transform);
+    }
+
+    private void OnReleaseDecal(DecalDestroyer decal)
+    {
+        decal.gameObject.SetActive(false);
+    }
+
+    private void OnDestroyDecal(DecalDestroyer decal)
+    {
+        Destroy(decal.gameObject);
+    }
 }

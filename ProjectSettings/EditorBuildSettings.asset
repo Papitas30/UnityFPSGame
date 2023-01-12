@@ -9,6 +9,9 @@ EditorBuildSettings:
     path: Assets/Low Poly Guns/Scenes/Main.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
   - enabled: 1
-    path: Assets/Scenes/Scene.unity
+    path: Assets/Scenes/Game1.unity
     guid: 95398c6dd96969b45aeb9fc294f8a80d
+  - enabled: 1
+    path: Assets/Scenes/MainMenu.unity
+    guid: c35747373b5ea0248b8d38cd2cdc9469
   m_configObjects: {}
