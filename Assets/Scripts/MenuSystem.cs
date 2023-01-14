@@ -1,5 +1,5 @@
-using UnityEngine.Rendering.PostProcessing;
 using UnityEngine;
+using UnityEngine.Rendering.PostProcessing;
 using UnityEngine.SceneManagement;
 
 public class MenuSystem : MonoBehaviour
@@ -31,7 +31,7 @@ public class MenuSystem : MonoBehaviour
             if (GamePaused)
             {
                 Resume();
-                
+
             }
             else
             {
@@ -42,7 +42,7 @@ public class MenuSystem : MonoBehaviour
 
     public void Pause()
     {
-       
+
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         dof.active = true;
@@ -62,10 +62,10 @@ public class MenuSystem : MonoBehaviour
         Cursor.visible = false;
         dof.active = false;
     }
-    
+
     public void LoadSettings()
     {
-      
+
         PauseMenu.SetActive(false);
         SettingsMenu.SetActive(true);
     }
@@ -74,12 +74,14 @@ public class MenuSystem : MonoBehaviour
 
     {
         Resume();
-        SceneManager.LoadScene("Menu");
+        LoadingData.sceneToLoad = "MainMenu";
+        SceneManager.LoadScene("Loading");
     }
 
     public void QuitGame()
     {
         Debug.Log("Quitting game...");
+        System.GC.Collect();
         Application.Quit();
     }
     public void AmbientOccBool(bool value)
